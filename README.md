@@ -5,7 +5,7 @@ Bosch XDK post at https://xdk.bosch-connectivity.com/community/-/message_boards/
 
 This is a sample display for all the topics on the public IOT.ECLIPSE.ORG broker: 
 
-http://mirror2.gambitcommunications.com/update/doc/mqtt-bosch-demo1.png
+![screenshot](http://mirror2.gambitcommunications.com/update/doc/mqtt-bosch-demo1.png)
 
 
 
