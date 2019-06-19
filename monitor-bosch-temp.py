@@ -14,6 +14,7 @@ import logging
 import threading
 import multiprocessing
 import webbrowser
+import ssl
 
 # debug.setLogger(debug.Debug('all'))
 
@@ -220,11 +221,16 @@ def on_disconnect(client, userdata, rc):
     if rc != 0:
     	logging.error ("unexpected disconnect: " + str(rc))
 
-def subscriber_client(addr):
+def subscriber_client():
 	client = mqtt.Client()
 	client.on_connect = on_connect
 	client.on_message = on_message
 	client.on_disconnect = on_disconnect
+
+	if (main.is_tls):
+#		logging.debug ("cafile " + main.cafile)
+		client.tls_set(ca_certs=main.cafile, certfile=main.certfile, keyfile=main.keyfile, tls_version=ssl.PROTOCOL_SSLv23)
+		client.tls_insecure_set(True)
 
 	client.connect(main.host_ip, main.port_num, 60)
 
@@ -238,6 +244,10 @@ class MyApp:
 		self.port_num = None
 		self.verbose = False
 		self.thresh = 70000
+		self.is_tls = False
+		self.cafile = ""
+		self.certfile = None
+		self.keyfile = None
 
 		self.is_stopped = False
 		self.is_paused = False
@@ -253,6 +263,10 @@ class MyApp:
 		print ("\t[-p|--port port]        port to connect to; default port 1883")
 		print ("\t[-t|--thresh threshold] temperature threshold; default 70000")
 		print ("\t[-v|--verbose]    verbose output")
+		print ("\t[-T|--tls]        use TLS")
+		print ("\t[-c|--cafile]     certificate authority file for TLS")
+		print ("\t[-C|--certfile]   client certificate file for TLS")
+		print ("\t[-K|--keyfile]    client private key file for TLS")
 		return
 
 	def start(self):
@@ -261,7 +275,7 @@ class MyApp:
 		self.show_gui()
 		# from now on GUI is expected to be up
 
-		subscriber_client (self.host_ip)
+		subscriber_client ()
 
 		self.update_thread = _UpdateThread(self)
 		self.update_thread.connect("completed", self.completed_cb)
@@ -272,7 +286,7 @@ class MyApp:
 	###############################
 	def command_line(self):
 		try:
-			opts, args = getopt.getopt(sys.argv[1:], "h:p:t:v", ["host=", "port=", "thresh=", "verbose"])
+			opts, args = getopt.getopt(sys.argv[1:], "h:p:t:vTc:C:K:", ["host=", "port=", "thresh=", "verbose", "tls", "cafile=", "certfile=", "keyfile="])
 		except getopt.GetoptError as err:
 			# print help information and exit:
 			logging.error (str(err)) # will print something like "option -a not recognized"
@@ -280,6 +294,7 @@ class MyApp:
 			sys.exit(1)
 
 		for o, a in opts:
+#			logging.debug ("opt " + o)
 			if o in ("-v", "--verbose"):
 			    self.verbose = True
 			elif o in ("-h", "--host"):
@@ -288,6 +303,14 @@ class MyApp:
 				self.port_num = a
 			elif o in ("-t", "--thresh"):
 				self.thresh = int(a)
+			elif o in ("-T", "--tls"):
+				self.is_tls = True
+			elif o in ("-c", "--cafile"):
+				self.cafile = a
+			elif o in ("-C", "--certfile"):
+				self.certfile = a
+			elif o in ("-K", "--keyfile"):
+				self.keyfile = a
 			else:
 			    assert False, "unhandled option"
 
