@@ -2,6 +2,8 @@
 
 ## Overview
 
+This is part of our MIMIC MQTT Simulator Bosch XDK demo.
+
 This simple subscriber client displays the number of Bosch sensors it detects publishing to a broker. It goes by the serial number published in the telemetry by the sensor simulation detailed in the
 Bosch XDK post at https://xdk.bosch-connectivity.com/community/-/message_boards/message/93503
 
