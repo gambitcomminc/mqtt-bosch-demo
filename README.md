@@ -18,7 +18,7 @@ It also depends on the Eclipse Paho MQTT client API, as well as other Python pac
 
 ## Usage
 
-mqtt-bosch-demo.py --host iot.eclipse.org --thresh 70000
+monitor-bosch-demo.py --host iot.eclipse.org --thresh 70000
 
 generated the above display.
 
