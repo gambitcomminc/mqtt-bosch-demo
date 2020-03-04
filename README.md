@@ -11,6 +11,9 @@ This is a sample display for all the topics on the public IOT.ECLIPSE.ORG broker
 
 ![screenshot](http://mirror2.gambitcommunications.com/update/doc/mqtt-bosch-demo1.png)
 
+If any of the sensors' temperature goes above a pre-defined threshold, then a red message appears.
+See it in action in the video below.
+
 ## Installation / Requirements
 
 To run this tool, you need Python installed on your system.
